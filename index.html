@@ -11,23 +11,54 @@
     <div id='map'></div>
     <script>
         let map;
+        let markers = [];
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 42.353903, lng: -71.105453},
                 zoom: 13
             });
-            const hyatt = {lat: 42.353903, lng: -71.105453};
-            const marker = new google.maps.Marker({
-                position: hyatt,
-                map: map,
-                title: 'Hyatt Marker'
-            });
-            const infowindow = new google.maps.InfoWindow({
-                content: 'Hyatt regency boston cambridge'
-            });
-            marker.addListener('click', function() {
+
+            const locations = [
+                {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
+                {title: 'Havard Business School', location: {lat: 42.365515, lng: -71.122141}},
+                {title: 'MIT Sloan School of Management', location: {lat: 42.361007, lng: -71.082995}},
+                {title: 'New England Aquarium', location: {lat: 42.359131, lng: -71.049581}},
+                {title: 'Museum of Fine Arts, Boston', location: {lat: 42.339381, lng: -71.094048}},
+                {title: 'Isabella Stewart Gardner Museum', location: {lat: 42.338180, lng: -71.099121}},
+                {title: 'Boston Children\'s Museum', location: {lat: 42.351868, lng: -71.049993}}
+            ];
+
+            let largeInfowindow = new google.maps.InfoWindow();
+            let bounds = new google.maps.LatLngBounds();
+
+            for (let i=0; i<locations.length; i++) {
+                let position = locations[i].location;
+                let title = locations[i].title;
+                let marker = new google.maps.Marker({
+                    map: map,
+                    position: position,
+                    title: title,
+                    animation: google.maps.Animation.DROP,
+                    id: i
+                });
+                markers.push(marker);
+                bounds.extend(marker.position);
+                marker.addListener('click', function() {
+                    populateInfoWindow(this, largeInfowindow);
+                });
+            }
+            map.fitBounds(bounds);
+        }
+
+        function populateInfoWindow(marker, infowindow) {
+            if (infowindow.marker != marker) {
+                infowindow.marker = marker;
+                infowindow.setContent('<div>' + marker.title +'</div>');
                 infowindow.open(map, marker);
-            });
+                infowindow.addListener('closeclick', function() {
+                    infowindow.setMarker(null);
+                });
+            }
         }
     </script>
 
