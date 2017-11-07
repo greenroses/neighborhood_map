@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Neighborhood Map</title>
+    <script src='js/jquery-3.2.1.min.js'></script>
+    <link rel='stylesheet' href='css/styles.css'>
+   </style>
+  </head>
+  <body>
+    <div id='map'></div>
+    <script>
+        let map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 42.353903, lng: -71.105453},
+                zoom: 13
+            });
+            const hyatt = {lat: 42.353903, lng: -71.105453};
+            const marker = new google.maps.Marker({
+                position: hyatt,
+                map: map,
+                title: 'Hyatt Marker'
+            });
+        }
+    </script>
+
+    <script async defer
+        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChOXEW3guRfarl6CPkCrCJu8cmOEGEaVw&v=3&callback=initMap'>
+    </script>
+  </body>
+</html>
