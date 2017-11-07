@@ -22,6 +22,12 @@
                 map: map,
                 title: 'Hyatt Marker'
             });
+            const infowindow = new google.maps.InfoWindow({
+                content: 'Hyatt regency boston cambridge'
+            });
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
         }
     </script>
 
