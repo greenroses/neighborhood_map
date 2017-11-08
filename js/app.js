@@ -16,7 +16,6 @@ var Place = function(data) {
 var ViewModel = function() {
     var self = this;
     self.placeList = ko.observableArray([]);
-    self.showList = ko.observableArray([]);
     self.filter = ko.observable('');
     // either enter or click on filter button will filter the list
     self.setCurrentFilter = function() {
@@ -31,7 +30,7 @@ var ViewModel = function() {
             markers.forEach(function(item) {
                 item.setMap(map);
             });
-            return self.placeList();
+            return places;
         }
         else {
             markers.forEach(function(item) {
@@ -45,11 +44,12 @@ var ViewModel = function() {
     }, this);
 
     self.setPlace = function(clickedPlace) {
+        console.log('hi');
+        console.log('clickedPlace', clickedPlace);
+        console.log('clickedPlace.title', clickedPlace.title);
         if (currentMarker) currentMarker.setAnimation(null);
-        //!!!To get the value of clickedPlace.title you need to remember to use parentheses
-        //like this: console.log(clickedPlace.title())
         //!!!Remember to add [0] because the result of array filter is an array
-        currentMarker = markers.filter(item => item.title === clickedPlace.title())[0];
+        currentMarker = markers.filter(item => item.title === clickedPlace.title)[0];
         toggleBounce(currentMarker);
         //populateInfoWindow(currentMarker, smallInfowindow);
     }
