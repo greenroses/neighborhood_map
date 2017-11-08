@@ -28,9 +28,18 @@ var ViewModel = function() {
 
     self.filterResults = ko.computed(function() {
         if (self.filter().length == 0) {
+            markers.forEach(function(item) {
+                item.setMap(map);
+            });
             return self.placeList();
         }
         else {
+            markers.forEach(function(item) {
+                item.setMap(null);
+            });
+            markers.filter((item) => item.title.toLowerCase().includes(self.filter().toLowerCase()) === true).forEach(function(item) {
+                item.setMap(map);
+            });
             return places.filter((item) => item.title.toLowerCase().includes(self.filter().toLowerCase()) === true);
         }
     }, this);
