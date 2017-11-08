@@ -34,17 +34,14 @@ var ViewModel = function() {
             return places.filter((item) => item.title.includes(self.filter()) === true);
         }
     }, this);
-////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-    this.currentPlace = ko.observable();
 
     self.setPlace = function(clickedPlace) {
-        //if (currentMarker) currentMarker.setAnimation(null);
-        self.currentPlace(clickedPlace);
-        console.log(self.currentPlace());
-        console.log(clickedPlace); ////////////////////
-        currentMarker = markers.filter(item => item.title === clickedPlace.title);
-        //toggleBounce(currentMarker);
+        if (currentMarker) currentMarker.setAnimation(null);
+        //To get the value of clickedPlace.title you need to remember to use parentheses
+        //like this: console.log(clickedPlace.title())
+        //Remember to add [0] because the result of array filter is an array
+        currentMarker = markers.filter(item => item.title === clickedPlace.title())[0];
+        toggleBounce(currentMarker);
         //populateInfoWindow(currentMarker, smallInfowindow);
     }
 };
