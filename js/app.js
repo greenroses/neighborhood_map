@@ -51,7 +51,7 @@ var ViewModel = function() {
         //!!!Remember to add [0] because the result of array filter is an array
         currentMarker = markers.filter(item => item.title === clickedPlace.title)[0];
         toggleBounce(currentMarker);
-        //populateInfoWindow(currentMarker, smallInfowindow);
+        populateInfoWindow(currentMarker, largeInfowindow);
     }
 };
 
@@ -62,13 +62,14 @@ $(document).ready(function() {
 let map;
 let markers = [];
 let currentMarker = null;
+let largeInfowindow;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 42.353903, lng: -71.105453},
         zoom: 13
     });
 
-    let largeInfowindow = new google.maps.InfoWindow();
+    largeInfowindow = new google.maps.InfoWindow();
     let bounds = new google.maps.LatLngBounds();
 
     for (let i=0; i<places.length; i++) {
