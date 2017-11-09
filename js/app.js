@@ -1,4 +1,5 @@
 const places = [
+    {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
     {title: 'Havard Business School', location: {lat: 42.365515, lng: -71.122141}},
     {title: 'MIT Sloan School of Management', location: {lat: 42.361007, lng: -71.082995}},
     {title: 'New England Aquarium', location: {lat: 42.359131, lng: -71.049581}},
@@ -100,7 +101,7 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.marker = marker;
         infowindow.setContent('<div class="wikipedia-container">' +
             '<h3 id="marker-header">' + marker.title + '</h3>' +
-            '<p id="wikipedia-header">Relevant Wikipedia articles</p>' +
+            '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
             '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>')
 
         infowindow.open(map, marker);
@@ -144,6 +145,10 @@ function loadData(marker) {
                 $wikiElem.append('<li><a href="' + url + '" target="_blank">' +
                     articleStr + '</a></li>');
             };
+
+            if (articleList.length == 0) {
+                $wikiElem.text("No relevant wikipedia articles");
+            }
 
             clearTimeout(wikiRequestTimeout);
         }
