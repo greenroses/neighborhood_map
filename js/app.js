@@ -156,3 +156,8 @@ function loadData(marker) {
 
     return false;
 };
+
+function mapError() {
+    console.log('map error');
+    alert('Cannot load Google Maps');
+}
