@@ -1,5 +1,4 @@
 const places = [
-    {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
     {title: 'Havard Business School', location: {lat: 42.365515, lng: -71.122141}},
     {title: 'MIT Sloan School of Management', location: {lat: 42.361007, lng: -71.082995}},
     {title: 'New England Aquarium', location: {lat: 42.359131, lng: -71.049581}},
@@ -52,6 +51,7 @@ var ViewModel = function() {
         currentMarker = markers.filter(item => item.title === clickedPlace.title)[0];
         toggleBounce(currentMarker);
         populateInfoWindow(currentMarker, largeInfowindow);
+        loadData(currentMarker);
     }
 };
 
@@ -86,6 +86,7 @@ function initMap() {
         bounds.extend(marker.position);
         marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
+            loadData(this);
             if (currentMarker) currentMarker.setAnimation(null);
             currentMarker = marker;
             toggleBounce(this);
@@ -97,7 +98,11 @@ function initMap() {
 function populateInfoWindow(marker, infowindow) {
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
-        infowindow.setContent('<div>' + marker.title +'</div>');
+        infowindow.setContent('<div class="wikipedia-container">' +
+            '<h3 id="marker-header">' + marker.title + '</h3>' +
+            '<p id="wikipedia-header">Relevant Wikipedia articles</p>' +
+            '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>')
+
         infowindow.open(map, marker);
         infowindow.addListener('closeclick', function() {
             infowindow.setMarker(null);
@@ -112,3 +117,37 @@ function toggleBounce(marker) {
         marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
+
+function loadData(marker) {
+
+    var $wikiElem = $('#wikipedia-links');
+
+    // clear out old data before new request
+    $wikiElem.text("");
+
+    //Wikipedia AJAX request
+    var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+ marker.title + '&format=json&callback=wikiCallback';
+
+    var wikiRequestTimeout = setTimeout(function(){
+        $wikiElem.text("failed to get wikipedia resources");
+    }, 8000);
+
+    $.ajax({
+        url: wikiUrl,
+        dataType: "jsonp",
+        success: function( response ) {
+            var articleList = response[1];
+
+            for (var i=0; i<articleList.length; i++) {
+                articleStr = articleList[i];
+                var url = 'http://en.wikipedia.org/wiki/'+ articleStr;
+                $wikiElem.append('<li><a href="' + url + '" target="_blank">' +
+                    articleStr + '</a></li>');
+            };
+
+            clearTimeout(wikiRequestTimeout);
+        }
+    });
+
+    return false;
+};
