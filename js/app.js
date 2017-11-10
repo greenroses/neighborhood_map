@@ -1,11 +1,16 @@
 const places = [
-    {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
+    {title: 'New England Aquarium', location: {lat: 42.359131, lng: -71.049581}},
+    {title: 'Faneuil Hall', location: {lat: 42.359799, lng: -71.054460}},
+    {title: 'Museum of Fine Arts, Boston', location: {lat: 42.339381, lng: -71.094048}},
     {title: 'Havard Business School', location: {lat: 42.365515, lng: -71.122141}},
     {title: 'MIT Sloan School of Management', location: {lat: 42.361007, lng: -71.082995}},
-    {title: 'New England Aquarium', location: {lat: 42.359131, lng: -71.049581}},
-    {title: 'Museum of Fine Arts, Boston', location: {lat: 42.339381, lng: -71.094048}},
     {title: 'Isabella Stewart Gardner Museum', location: {lat: 42.338180, lng: -71.099121}},
-    {title: 'Boston Children\'s Museum', location: {lat: 42.351868, lng: -71.049993}}
+    {title: 'Boston Children\'s Museum', location: {lat: 42.351868, lng: -71.049993}},
+    {title: 'Museum of Science, Boston', location: {lat: 42.367938, lng: -71.071110}},
+    {title: 'Boston National Historical Park', location: {lat: 42.373162, lng: -71.056834}},
+    {title: 'Institute of Contemporary Art, Boston', location: {lat: 42.352882, lng: -71.043011}},
+    {title: 'Harvard Museum of Natural History', location: {lat: 42.378463, lng: -71.115558}},
+    {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
 ];
 
 const Place = function(data) {
