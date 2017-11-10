@@ -67,7 +67,10 @@ let largeInfowindow;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 42.353903, lng: -71.105453},
-        zoom: 13
+        zoom: 13,
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT
+        },
     });
 
     largeInfowindow = new google.maps.InfoWindow();
@@ -160,4 +163,21 @@ function loadData(marker) {
 function mapError() {
     console.log('map error');
     alert('Cannot load Google Maps');
-}
+};
+
+let sideShow = false;
+function sideControl() {
+    let style = window.getComputedStyle(document.getElementById('floating-panel'));
+    if (style.display === 'block') {
+        sideShow = true;
+    }
+    if (sideShow) {
+        document.getElementById('floating-panel').style.display = 'none';
+        document.getElementById('side-control').style.left = '0px';
+        sideShow = false;
+    } else {
+        $('#floating-panel')[0].style.display = 'block';    //$('#floating-panel')[0] is equal to document.getElementById('floating-panel')
+        document.getElementById('side-control').style.left = '281px';
+        sideShow = true;
+    }
+};

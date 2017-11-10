@@ -2,17 +2,75 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: arial, sans-serif;
 }
 
-#container {
-    height: 100%;
-}
 #map {
     height: 100%;
-    width: 70%;
 }
 
-#bar {
-    width: 30%;
+#floating-panel {
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 5;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+    border: 1px solid #999;
+    border-top: 0px;
+    line-height: 30px;
+    width: 260px;
+    display: none;
 }
+
+#side-control {
+    position: absolute;
+    /*left: 281px;*/
+    left: 0px;
+    padding: 1em;
+    z-index: 5;
+    background-color: white;
+    border: none;
+}
+
+input {
+    padding: 6px;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.filter-btn {
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    padding: 6px 12px;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    text-align: center;
+    border: 2px solid #9bbff4;
+}
+
+.filter-btn:hover {
+    background-color: #9bbff4;
+    color: white;
+}
+
+li:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nowrap {
+    display: inline;
+}
+
+
 

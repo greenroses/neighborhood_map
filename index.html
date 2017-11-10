@@ -2,25 +2,28 @@
 <html>
   <head>
     <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Neighborhood Map</title>
     <script src='js/jquery-3.2.1.min.js'></script>
     <script src='js/knockout-3.4.2.js'></script>
     <script src='js/app.js'></script>
     <link rel='stylesheet' href='css/styles.css'>
+    <link rel='stylesheet' media='screen and (min-width:500px)' href='css/over500.css'>
    </style>
   </head>
   <body>
     <div id='container'>
-        <div id='bar'>
-            <p>Boston Locations</p>
-            <p>Filter: <input data-bind='value: filter' /></p>
-            <button data-bind='click: setCurrentFilter'>filter</button>
+        <div id='floating-panel'>
+            <h1 id='side-bar-header'>Boston Places</h1>
+            <input class='nowrap' data-bind='value: filter' placeholder='search Boston places'/>
+            <button class='filter-btn' data-bind='click: setCurrentFilter'>filter</button>
             <ul data-bind='foreach: filterResults'>
                 <li data-bind='text: title, click: $parent.setPlace'></li>
             </ul>
         </div>
-        <div id='map'></div>
     </div>
+    <button onclick='sideControl()' id='side-control'>☰</button>
+    <div id='map'></div>
     <script async defer
         src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChOXEW3guRfarl6CPkCrCJu8cmOEGEaVw&v=3&callback=initMap' onerror='mapError()'>
     </script>
