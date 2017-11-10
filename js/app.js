@@ -163,11 +163,13 @@ function loadData(marker) {
     let wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+ marker.title + '&format=json&callback=wikiCallback';
 
     // handle error
-    const wikiRequestTimeout = setTimeout(function(){
+    // From v2.x.x jQuery has officially supported error handling for jsonp requests with fail method or error callback option.
+    // setTimeout trick is not need and not a good practice for handling asynchronous callbacks.
+    /*const wikiRequestTimeout = setTimeout(function(){
         $wikiElem.text("failed to get wikipedia resources");
-    }, 8000);
+    }, 8000);*/
 
-    //jQuery ajax call
+    //jQuery ajax call with fail method
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
@@ -197,6 +199,8 @@ function loadData(marker) {
             }
             clearTimeout(wikiRequestTimeout);
         }
+    }).fail(function(jqXHR, textStatus) {
+        alert('Wikipedia request failed: ' + textStatus);
     });
 
     return false;
