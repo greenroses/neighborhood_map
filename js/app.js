@@ -8,14 +8,16 @@ const places = [
     {title: 'Boston Children\'s Museum', location: {lat: 42.351868, lng: -71.049993}}
 ];
 
-var Place = function(data) {
+const Place = function(data) {
     this.title = ko.observable(data.title);
     this.location = ko.observable(data.location);
 };
 
-var ViewModel = function() {
-    var self = this;
+// Knockout ViewModel
+const ViewModel = function() {
+    const self = this;
     self.placeList = ko.observableArray([]);
+    //text input field to filter the list items
     self.filter = ko.observable('');
     // either enter or click on filter button will filter the list
     self.setCurrentFilter = function() {
@@ -25,6 +27,7 @@ var ViewModel = function() {
         self.placeList.push( new Place(placeItem) );
     });
 
+    // filter list items and markers with user input
     self.filterResults = ko.computed(function() {
         if (self.filter().length == 0) {
             markers.forEach(function(item) {
@@ -42,7 +45,7 @@ var ViewModel = function() {
             return places.filter((item) => item.title.toLowerCase().includes(self.filter().toLowerCase()) === true);
         }
     }, this);
-
+    // clicking on list item will make marker bounce and display infowindow with wikipedia info
     self.setPlace = function(clickedPlace) {
         console.log('hi');
         console.log('clickedPlace', clickedPlace);
@@ -88,6 +91,8 @@ function initMap() {
         });
         markers.push(marker);
         bounds.extend(marker.position);
+        // clicking a marker opens infowindow
+        // markers animate when clicked
         marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
             loadData(this);
@@ -99,6 +104,7 @@ function initMap() {
     map.fitBounds(bounds);
 }
 
+// populate infowindow with wikipedia elements, and open infowindow at marker
 function populateInfoWindow(marker, infowindow) {
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
@@ -114,6 +120,7 @@ function populateInfoWindow(marker, infowindow) {
     }
 }
 
+// google maps marker animation: click to bounce or stop bounce
 function toggleBounce(marker) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -122,37 +129,38 @@ function toggleBounce(marker) {
     }
 }
 
+// use wikipedia API to display relative article links of each place in InfoWindow
 function loadData(marker) {
-
-    var $wikiElem = $('#wikipedia-links');
+    // #wikipedia-links is defined in populateInfoWindow function
+    const $wikiElem = $('#wikipedia-links');
 
     // clear out old data before new request
     $wikiElem.text("");
 
-    //Wikipedia AJAX request
-    var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+ marker.title + '&format=json&callback=wikiCallback';
+    // Wikipedia AJAX request
+    let wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+ marker.title + '&format=json&callback=wikiCallback';
 
-    var wikiRequestTimeout = setTimeout(function(){
+    // handle error
+    const wikiRequestTimeout = setTimeout(function(){
         $wikiElem.text("failed to get wikipedia resources");
     }, 8000);
 
+    //jQuery ajax call
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
         success: function( response ) {
-            var articleList = response[1];
-
-            for (var i=0; i<articleList.length; i++) {
+            let articleList = response[1];
+            for (let i=0; i<articleList.length; i++) {
                 articleStr = articleList[i];
-                var url = 'http://en.wikipedia.org/wiki/'+ articleStr;
+                let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
                 $wikiElem.append('<li><a href="' + url + '" target="_blank">' +
                     articleStr + '</a></li>');
             };
-
+            // if no related wiki articles
             if (articleList.length == 0) {
                 $wikiElem.text("No relevant wikipedia articles");
             }
-
             clearTimeout(wikiRequestTimeout);
         }
     });
@@ -160,17 +168,22 @@ function loadData(marker) {
     return false;
 };
 
+// google maps error fallback function
 function mapError() {
-    console.log('map error');
     alert('Cannot load Google Maps');
 };
 
+// click hamburger button to hide or show the side panel
 let sideShow = false;
 function sideControl() {
+    // detect whether side panel is currently shown or hidden
+    // side panel might be shown or hidden depending on screen sizes (media query)
     let style = window.getComputedStyle(document.getElementById('floating-panel'));
     if (style.display === 'block') {
         sideShow = true;
     }
+    // if side panel is shown, clicking the hamburger btn will hide the side panel and move the btn to left of the screen
+    // else if side panel is hidden, clicking the hamburger btn will show the side panel and move the btn to right of the side panel
     if (sideShow) {
         document.getElementById('floating-panel').style.display = 'none';
         document.getElementById('side-control').style.left = '0px';
