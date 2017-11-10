@@ -168,15 +168,27 @@ function loadData(marker) {
         dataType: "jsonp",
         success: function( response ) {
             let articleList = response[1];
+            let wikiResult = '';
             for (let i=0; i<articleList.length; i++) {
                 articleStr = articleList[i];
                 let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
-                $wikiElem.append('<li><a href="' + url + '" target="_blank">' +
-                    articleStr + '</a></li>');
+                /*$wikiElem.append('<li><a href="' + url + '" target="_blank">' +
+                    articleStr + '</a></li>');*/
+                wikiResult = wikiResult + '<li><a href="' + url + '" target="_blank">' +
+                    articleStr + '</a></li>';
+                largeInfowindow.setContent('<div class="wikipedia-container">' +
+                    '<h3 id="marker-header">' + marker.title + '</h3>' +
+                    '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
+                    '<ul id="wikipedia-links">' +
+                    wikiResult + '</ul></div>');
             }
             // if no related wiki articles
             if (articleList.length === 0) {
-                $wikiElem.text("No relevant wikipedia articles");
+                //$wikiElem.text("No relevant wikipedia articles");
+                largeInfowindow.setContent('<div class="wikipedia-container">' +
+                    '<h3 id="marker-header">' + marker.title + '</h3>' +
+                    '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
+                    '<ul id="wikipedia-links">No relevant wikipedia articles</ul></div>');
             }
             clearTimeout(wikiRequestTimeout);
         }
