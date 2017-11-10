@@ -99,13 +99,18 @@ function initMap() {
         bounds.extend(marker.position);
         // clicking a marker opens infowindow and
         // markers animate when clicked
-        attachInfoWindow(marker);
+        attachInfoWindow(marker);  //Using closures in event listeners
     }
     map.fitBounds(bounds);
+    // make sure markers always fit on screen as user resizes their browser window
+    google.maps.event.addDomListener(window, 'resize', function() {
+        map.fitBounds(bounds);
+    })
 }
 
 // Attaches an info window to a marker with wikipedia data. When the marker
 // is clicked, the info window will open, and the marker will bounce.
+// Using closures in event listeners
 function attachInfoWindow(marker) {
     marker.addListener('click', function() {
         populateInfoWindow(marker, largeInfowindow);
