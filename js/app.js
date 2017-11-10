@@ -133,8 +133,11 @@ function populateInfoWindow(marker, infowindow) {
             '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>');
 
         infowindow.open(map, marker);
+        // click at the cross to close the info window and also stop marker animation
         infowindow.addListener('closeclick', function() {
-            infowindow.setMarker(null);
+            infowindow.close();
+            infowindow.marker = null;   // so that clicking on the same marker right after closing infowindow will open the info again
+            marker.setAnimation(null);
         });
     }
 }
