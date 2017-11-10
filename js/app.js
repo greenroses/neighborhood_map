@@ -57,9 +57,6 @@ const ViewModel = function() {
     }, this);
     // clicking on list item will make marker bounce and display infowindow with wikipedia info
     self.setPlace = function(clickedPlace) {
-        console.log('hi');
-        console.log('clickedPlace', clickedPlace);
-        console.log('clickedPlace.title', clickedPlace.title);
         if (currentMarker) currentMarker.setAnimation(null);
         //!!!Remember to add [0] because the result of array filter is an array
         currentMarker = markers.filter(item => item.title === clickedPlace.title)[0];
@@ -153,22 +150,11 @@ function toggleBounce(marker) {
 
 // Use wikipedia API to display relative article links of each place in InfoWindow
 function loadData(marker) {
-    // #wikipedia-links is defined in populateInfoWindow function
-    const $wikiElem = $('#wikipedia-links');
-
-    // clear out old data before new request
-    $wikiElem.text("");
-
     // Wikipedia AJAX request
     let wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+ marker.title + '&format=json&callback=wikiCallback';
 
-    // handle error
     // From v2.x.x jQuery has officially supported error handling for jsonp requests with fail method or error callback option.
     // setTimeout trick is not need and not a good practice for handling asynchronous callbacks.
-    /*const wikiRequestTimeout = setTimeout(function(){
-        $wikiElem.text("failed to get wikipedia resources");
-    }, 8000);*/
-
     //jQuery ajax call with fail method
     $.ajax({
         url: wikiUrl,
@@ -179,8 +165,6 @@ function loadData(marker) {
             for (let i=0; i<articleList.length; i++) {
                 articleStr = articleList[i];
                 let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
-                /*$wikiElem.append('<li><a href="' + url + '" target="_blank">' +
-                    articleStr + '</a></li>');*/
                 wikiResult = wikiResult + '<li><a href="' + url + '" target="_blank">' +
                     articleStr + '</a></li>';
                 largeInfowindow.setContent('<div class="wikipedia-container">' +
@@ -191,13 +175,11 @@ function loadData(marker) {
             }
             // if no related wiki articles
             if (articleList.length === 0) {
-                //$wikiElem.text("No relevant wikipedia articles");
                 largeInfowindow.setContent('<div class="wikipedia-container">' +
                     '<h3 id="marker-header">' + marker.title + '</h3>' +
                     '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
                     '<ul id="wikipedia-links">No relevant wikipedia articles</ul></div>');
             }
-            clearTimeout(wikiRequestTimeout);
         }
     }).fail(function(jqXHR, textStatus) {
         alert('Wikipedia request failed: ' + textStatus);

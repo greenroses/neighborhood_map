@@ -5,6 +5,10 @@ html, body {
     font-family: arial, sans-serif;
 }
 
+main {
+    height: 100%;
+}
+
 #map {
     height: 100%;
 }
