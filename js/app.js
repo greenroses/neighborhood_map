@@ -57,12 +57,16 @@ const ViewModel = function() {
     }, this);
     // clicking on list item will make marker bounce and display infowindow with wikipedia info
     self.setPlace = function(clickedPlace) {
-        if (currentMarker) currentMarker.setAnimation(null);
+        if (currentMarker) {
+            currentMarker.setAnimation(null);
+        }
         //!!!Remember to add [0] because the result of array filter is an array
         currentMarker = markers.filter(item => item.title === clickedPlace.title)[0];
-        toggleBounce(currentMarker);
-        populateInfoWindow(currentMarker, largeInfowindow);
-        loadData(currentMarker);
+        if (currentMarker) {
+            toggleBounce(currentMarker);
+            populateInfoWindow(currentMarker, largeInfowindow);
+            loadData(currentMarker);
+        }
     };
 };
 
@@ -130,7 +134,7 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.setContent('<div class="wikipedia-container">' +
             '<h3 id="marker-header">' + marker.title + '</h3>' +
             '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
-            '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>');
+            '<ul id="wikipedia-links"></ul></div>');
 
         infowindow.open(map, marker);
         // click at the cross to close the info window and also stop marker animation
@@ -158,31 +162,31 @@ function loadData(marker) {
 
     // From v2.x.x jQuery has officially supported error handling for jsonp requests with fail method or error callback option.
     // setTimeout trick is not need and not a good practice for handling asynchronous callbacks.
-    //jQuery ajax call with fail method
+    // jQuery ajax call with done and fail method
     $.ajax({
         url: wikiUrl,
         dataType: "jsonp",
-        success: function( response ) {
-            let articleList = response[1];
-            let wikiResult = '';
-            for (let i=0; i<articleList.length; i++) {
-                articleStr = articleList[i];
-                let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
-                wikiResult = wikiResult + '<li><a href="' + url + '" target="_blank">' +
-                    articleStr + '</a></li>';
-                largeInfowindow.setContent('<div class="wikipedia-container">' +
-                    '<h3 id="marker-header">' + marker.title + '</h3>' +
-                    '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
-                    '<ul id="wikipedia-links">' +
-                    wikiResult + '</ul></div>');
-            }
-            // if no related wiki articles
-            if (articleList.length === 0) {
-                largeInfowindow.setContent('<div class="wikipedia-container">' +
-                    '<h3 id="marker-header">' + marker.title + '</h3>' +
-                    '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
-                    '<ul id="wikipedia-links">No relevant wikipedia articles</ul></div>');
-            }
+    }).done(function(data) {
+        //successful
+        let articleList = data[1];
+        let wikiResult = '';
+        for (let i=0; i<articleList.length; i++) {
+            articleStr = articleList[i];
+            let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
+            wikiResult = wikiResult + '<li><a href="' + url + '" target="_blank">' +
+                articleStr + '</a></li>';
+            largeInfowindow.setContent('<div class="wikipedia-container">' +
+                '<h3 id="marker-header">' + marker.title + '</h3>' +
+                '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
+                '<ul id="wikipedia-links">' +
+                wikiResult + '</ul></div>');
+        }
+        // if no related wiki articles
+        if (articleList.length === 0) {
+            largeInfowindow.setContent('<div class="wikipedia-container">' +
+                '<h3 id="marker-header">' + marker.title + '</h3>' +
+                '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
+                '<ul id="wikipedia-links">No relevant wikipedia articles</ul></div>');
         }
     }).fail(function(jqXHR, textStatus) {
         alert('Wikipedia request failed: ' + textStatus);
