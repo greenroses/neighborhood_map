@@ -105,7 +105,7 @@ function initMap() {
     // make sure markers always fit on screen as user resizes their browser window
     google.maps.event.addDomListener(window, 'resize', function() {
         map.fitBounds(bounds);
-    })
+    });
 }
 
 // Attaches an info window to a marker with wikipedia data. When the marker
