@@ -13,6 +13,11 @@ const places = [
     {title: 'Hyatt Regency Boston Cambridge', location: {lat: 42.353903, lng: -71.105453}},
 ];
 
+let map;
+let markers = [];
+let currentMarker = null;
+let largeInfowindow;
+
 const Place = function(data) {
     this.title = ko.observable(data.title);
     this.location = ko.observable(data.location);
@@ -27,14 +32,14 @@ const ViewModel = function() {
     // either enter or click on filter button will filter the list
     self.setCurrentFilter = function() {
         self.filter(this.filter());
-    }
+    };
     places.forEach(function(placeItem) {
         self.placeList.push( new Place(placeItem) );
     });
 
     // filter list items and markers with user input
     self.filterResults = ko.computed(function() {
-        if (self.filter().length == 0) {
+        if (self.filter().length === 0) {
             markers.forEach(function(item) {
                 item.setMap(map);
             });
@@ -61,17 +66,13 @@ const ViewModel = function() {
         toggleBounce(currentMarker);
         populateInfoWindow(currentMarker, largeInfowindow);
         loadData(currentMarker);
-    }
+    };
 };
 
 $(document).ready(function() {
     ko.applyBindings(new ViewModel());
 });
 
-let map;
-let markers = [];
-let currentMarker = null;
-let largeInfowindow;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 42.353903, lng: -71.105453},
@@ -96,27 +97,38 @@ function initMap() {
         });
         markers.push(marker);
         bounds.extend(marker.position);
-        // clicking a marker opens infowindow
+        // clicking a marker opens infowindow and
         // markers animate when clicked
-        marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
-            loadData(this);
-            if (currentMarker) currentMarker.setAnimation(null);
-            currentMarker = marker;
-            toggleBounce(this);
-        });
+        attachInfoWindow(marker);
     }
     map.fitBounds(bounds);
 }
 
-// populate infowindow with wikipedia elements, and open infowindow at marker
+// Attaches an info window to a marker with wikipedia data. When the marker
+// is clicked, the info window will open, and the marker will bounce.
+function attachInfoWindow(marker) {
+    marker.addListener('click', function() {
+        populateInfoWindow(marker, largeInfowindow);
+        loadData(marker);
+        setCurrentMarker(marker);
+        toggleBounce(marker);
+    });
+}
+
+// Stop the animation of the previous marker. and update current marker.
+function setCurrentMarker(marker) {
+    if (currentMarker) currentMarker.setAnimation(null);
+    currentMarker = marker;
+}
+
+// Populate infowindow with wikipedia elements, and open infowindow at marker
 function populateInfoWindow(marker, infowindow) {
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
         infowindow.setContent('<div class="wikipedia-container">' +
             '<h3 id="marker-header">' + marker.title + '</h3>' +
             '<p id="wikipedia-header">Relevant Wikipedia articles: </p>' +
-            '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>')
+            '<ul id="wikipedia-links">Relevant Wikipedia articles links</ul></div>');
 
         infowindow.open(map, marker);
         infowindow.addListener('closeclick', function() {
@@ -125,7 +137,7 @@ function populateInfoWindow(marker, infowindow) {
     }
 }
 
-// google maps marker animation: click to bounce or stop bounce
+// Google maps marker animation: click to bounce or stop bounce
 function toggleBounce(marker) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -134,7 +146,7 @@ function toggleBounce(marker) {
     }
 }
 
-// use wikipedia API to display relative article links of each place in InfoWindow
+// Use wikipedia API to display relative article links of each place in InfoWindow
 function loadData(marker) {
     // #wikipedia-links is defined in populateInfoWindow function
     const $wikiElem = $('#wikipedia-links');
@@ -161,9 +173,9 @@ function loadData(marker) {
                 let url = 'http://en.wikipedia.org/wiki/'+ articleStr;
                 $wikiElem.append('<li><a href="' + url + '" target="_blank">' +
                     articleStr + '</a></li>');
-            };
+            }
             // if no related wiki articles
-            if (articleList.length == 0) {
+            if (articleList.length === 0) {
                 $wikiElem.text("No relevant wikipedia articles");
             }
             clearTimeout(wikiRequestTimeout);
@@ -171,14 +183,14 @@ function loadData(marker) {
     });
 
     return false;
-};
+}
 
-// google maps error fallback function
+// Google maps error fallback function
 function mapError() {
     alert('Cannot load Google Maps');
-};
+}
 
-// click hamburger button to hide or show the side panel
+// Click hamburger button to hide or show the side panel
 let sideShow = false;
 function sideControl() {
     // detect whether side panel is currently shown or hidden
@@ -198,4 +210,4 @@ function sideControl() {
         document.getElementById('side-control').style.left = '281px';
         sideShow = true;
     }
-};
+}
